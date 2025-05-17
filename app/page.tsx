@@ -1,38 +1,110 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Hammer, Search, Phone, User, Send, Settings } from "lucide-react"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
+import {
+  Hammer,
+  Search,
+  Phone,
+  User,
+  Send,
+  Settings,
+} from "lucide-react"
 import Link from "next/link"
+// Importar logo como caminho (se for Next.js e está na pasta public)
+const LogoPath = "/Logo.png"
 
 export default function Home() {
   const [logoSrc, setLogoSrc] = useState<string | null>(null)
   const [logoSize, setLogoSize] = useState<number>(100)
 
+  // Estados para formulário "Preciso de um serviço"
+  const [nomeCliente, setNomeCliente] = useState("")
+  const [telefoneCliente, setTelefoneCliente] = useState("")
+  const [cidadeCliente, setCidadeCliente] = useState("pontagrossa")
+  const [bairroCliente, setBairroCliente] = useState("")
+  const [outroBairroCliente, setOutroBairroCliente] = useState("")
+  const [descricaoServico, setDescricaoServico] = useState("")
+
   useEffect(() => {
-    // Verificar se há um logo salvo no localStorage
+    // Pega logo salva no localStorage, se houver
     const savedLogo = localStorage.getItem("tapronto-logo")
     if (savedLogo) {
       setLogoSrc(savedLogo)
+    } else {
+      setLogoSrc(LogoPath) // Usa a logo padrão da pasta public
     }
 
-    // Verificar se há um tamanho de logo salvo
+    // Pega tamanho salvo no localStorage
     const savedSize = localStorage.getItem("tapronto-logo-size")
     if (savedSize) {
       setLogoSize(Number.parseInt(savedSize))
     }
   }, [])
 
+  // Handler do envio do formulário "Preciso de um serviço"
+  const handleEnviarSolicitacao = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    // Usa o bairro selecionado, se for "outro" usa o outroBairroCliente
+    const bairroFinal =
+      bairroCliente === "outro" ? outroBairroCliente.trim() : bairroCliente
+
+    if (!nomeCliente.trim() || !telefoneCliente.trim() || !descricaoServico.trim() || !bairroFinal) {
+      alert("Por favor, preencha todos os campos obrigatórios.")
+      return
+    }
+
+    const numeroWhats = "5591999999999" // Troque para seu número no formato internacional (DD+Número sem + ou espaços)
+
+    // Monta a mensagem para WhatsApp
+    const mensagem = 
+      `Olá, meu nome é ${nomeCliente}.\n` +
+      `Preciso do seguinte serviço: ${descricaoServico}.\n` +
+      `Cidade: ${cidadeCliente}\n` +
+      `Bairro: ${bairroFinal}\n` +
+      `Telefone para contato: ${telefoneCliente}`
+
+    // Codifica a mensagem para a URL
+    const urlWhats = `https://wa.me/${numeroWhats}?text=${encodeURIComponent(mensagem)}`
+
+    // Abre o WhatsApp numa nova aba
+    window.open(urlWhats, "_blank")
+  }
+
+  // Função para controlar a exibição do input "Outro bairro"
+  const handleChangeBairro = (value: string) => {
+    setBairroCliente(value)
+  }
+
   return (
     <main className="min-h-screen bg-white">
       {/* Cabeçalho */}
-      <header className="text-white py-6 px-4 md:py-8 relative" style={{ backgroundColor: 'rgb(249, 164, 53)' }}>
-        <Link href="/admin" className="absolute top-4 right-4 text-white/80 hover:text-white" title="Configurações">
+      <header
+        className="text-white py-6 px-4 md:py-8 relative"
+        style={{ backgroundColor: "rgb(249, 164, 53)" }}
+      >
+        <Link
+          href="/admin"
+          className="absolute top-4 right-4 text-white/80 hover:text-white"
+          title="Configurações"
+        >
           <Settings size={20} />
         </Link>
         <div className="container mx-auto flex flex-col items-center">
@@ -40,7 +112,7 @@ export default function Home() {
           <div className="h-28 mb-4 flex items-center justify-center">
             {logoSrc ? (
               <img
-                src={logoSrc || "/placeholder.svg"}
+                src={logoSrc}
                 alt="Tá Pronto Logo"
                 className="object-contain"
                 style={{
@@ -52,8 +124,12 @@ export default function Home() {
               <div className="text-white text-sm">Seu Logo Aqui</div>
             )}
           </div>
-          <h1 className="text-2xl md:text-3xl font-bold text-center">Tá Pronto</h1>
-          <p className="text-center mt-2 max-w-2xl mx-auto">Conectando quem precisa com quem faz na sua cidade</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-center">
+            Tá Pronto
+          </h1>
+          <p className="text-center mt-2 max-w-2xl mx-auto">
+            Conectando quem precisa com quem faz na sua cidade
+          </p>
         </div>
       </header>
 
@@ -64,7 +140,14 @@ export default function Home() {
             Quem somos
           </h2>
           <p className="text-center text-black">
-Somos um grupo que acredita na potência do trabalho local. Desenvolvemos esta plataforma para conectar quem necessita de um serviço de alta qualidade aos profissionais que realmente dominam a sua área de atuação. Aqui, é possível encontrar e estabelecer conexões com eletricistas, pedreiros, pintores, marceneiros, encanadores e outros profissionais da sua área, sem complicações. Nossa meta é simplificar a rotina diária, valorizando a competência e a segurança dos serviços prestados perto de você.
+            Somos um grupo que acredita na potência do trabalho local.
+            Desenvolvemos esta plataforma para conectar quem necessita de um
+            serviço de alta qualidade aos profissionais que realmente dominam a
+            sua área de atuação. Aqui, é possível encontrar e estabelecer
+            conexões com eletricistas, pedreiros, pintores, marceneiros,
+            encanadores e outros profissionais da sua área, sem complicações.
+            Nossa meta é simplificar a rotina diária, valorizando a competência
+            e a segurança dos serviços prestados perto de você.
           </p>
         </div>
       </section>
@@ -92,16 +175,25 @@ Somos um grupo que acredita na potência do trabalho local. Desenvolvemos esta p
           {/* Formulário para quem precisa de serviço */}
           <TabsContent value="preciso">
             <div className="bg-white p-6 rounded-lg border shadow-sm">
-              <h3 className="text-lg font-medium mb-6 text-black">Preencha os dados para encontrar um profissional</h3>
+              <h3 className="text-lg font-medium mb-6 text-black">
+                Preencha os dados para encontrar um profissional
+              </h3>
 
-              <form className="space-y-6">
+              <form className="space-y-6" onSubmit={handleEnviarSolicitacao}>
                 <div className="space-y-2">
                   <Label htmlFor="nome-cliente" className="text-black">
                     Nome completo
                   </Label>
                   <div className="relative">
                     <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                    <Input id="nome-cliente" placeholder="Seu nome" className="pl-10 border-gray-300" />
+                    <Input
+                      id="nome-cliente"
+                      placeholder="Seu nome"
+                      className="pl-10 border-gray-300"
+                      value={nomeCliente}
+                      onChange={(e) => setNomeCliente(e.target.value)}
+                      required
+                    />
                   </div>
                 </div>
 
@@ -111,7 +203,15 @@ Somos um grupo que acredita na potência do trabalho local. Desenvolvemos esta p
                   </Label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                    <Input id="telefone-cliente" placeholder="(00) 00000-0000" className="pl-10 border-gray-300" />
+                    <Input
+                      id="telefone-cliente"
+                      placeholder="(00) 00000-0000"
+                      className="pl-10 border-gray-300"
+                      value={telefoneCliente}
+                      onChange={(e) => setTelefoneCliente(e.target.value)}
+                      required
+                      type="tel"
+                    />
                   </div>
                 </div>
 
@@ -119,7 +219,10 @@ Somos um grupo que acredita na potência do trabalho local. Desenvolvemos esta p
                   <Label htmlFor="cidade-cliente" className="text-black">
                     Cidade
                   </Label>
-                  <Select defaultValue="pontagrossa">
+                  <Select
+                    value={cidadeCliente}
+                    onValueChange={setCidadeCliente}
+                  >
                     <SelectTrigger className="border-gray-300">
                       <SelectValue placeholder="Selecione a cidade" />
                     </SelectTrigger>
@@ -134,11 +237,9 @@ Somos um grupo que acredita na potência do trabalho local. Desenvolvemos esta p
                     Bairro
                   </Label>
                   <Select
+                    value={bairroCliente}
                     onValueChange={(value) => {
-                      const outroInput = document.getElementById("outro-bairro-cliente")
-                      if (outroInput) {
-                        outroInput.style.display = value === "outro" ? "block" : "none"
-                      }
+                      handleChangeBairro(value)
                     }}
                   >
                     <SelectTrigger className="border-gray-300">
@@ -158,9 +259,17 @@ Somos um grupo que acredita na potência do trabalho local. Desenvolvemos esta p
                       <SelectItem value="outro">Outro</SelectItem>
                     </SelectContent>
                   </Select>
-                  <div id="outro-bairro-cliente" style={{ display: "none" }} className="mt-2">
-                    <Input placeholder="Digite o nome do bairro" className="border-gray-300" />
-                  </div>
+                  {bairroCliente === "outro" && (
+                    <div className="mt-2">
+                      <Input
+                        placeholder="Digite o nome do bairro"
+                        className="border-gray-300"
+                        value={outroBairroCliente}
+                        onChange={(e) => setOutroBairroCliente(e.target.value)}
+                        required
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -172,10 +281,13 @@ Somos um grupo que acredita na potência do trabalho local. Desenvolvemos esta p
                     placeholder="Explique qual serviço você precisa, quando precisa e outras informações importantes..."
                     rows={4}
                     className="border-gray-300"
+                    value={descricaoServico}
+                    onChange={(e) => setDescricaoServico(e.target.value)}
+                    required
                   />
                 </div>
 
-                <Button type="submit" className="w-full bg-blue hover:bg-blue/90">
+                <Button type="submit" className="w-full bg-blue hover:bg-blue/90 text-white">
                   <Send className="mr-2 h-4 w-4" />
                   Enviar solicitação
                 </Button>
@@ -186,7 +298,9 @@ Somos um grupo que acredita na potência do trabalho local. Desenvolvemos esta p
           {/* Formulário para quem oferece serviço */}
           <TabsContent value="ofereco">
             <div className="bg-white p-6 rounded-lg border shadow-sm">
-              <h3 className="text-lg font-medium mb-6 text-black">Cadastre-se como profissional</h3>
+              <h3 className="text-lg font-medium mb-6 text-black">
+                Cadastre-se como profissional
+              </h3>
 
               <form className="space-y-6">
                 <div className="space-y-2">
@@ -195,7 +309,11 @@ Somos um grupo que acredita na potência do trabalho local. Desenvolvemos esta p
                   </Label>
                   <div className="relative">
                     <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                    <Input id="nome-profissional" placeholder="Seu nome" className="pl-10 border-gray-300" />
+                    <Input
+                      id="nome-profissional"
+                      placeholder="Seu nome"
+                      className="pl-10 border-gray-300"
+                    />
                   </div>
                 </div>
 
@@ -205,98 +323,55 @@ Somos um grupo que acredita na potência do trabalho local. Desenvolvemos esta p
                   </Label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                    <Input id="telefone-profissional" placeholder="(00) 00000-0000" className="pl-10 border-gray-300" />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="cidade-profissional" className="text-black">
-                    Cidade
-                  </Label>
-                  <Select defaultValue="pontagrossa">
-                    <SelectTrigger className="border-gray-300">
-                      <SelectValue placeholder="Selecione a cidade" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="pontagrossa">Ponta Grossa</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="bairro-profissional" className="text-black">
-                    Bairro onde atende
-                  </Label>
-                  <Select
-                    onValueChange={(value) => {
-                      const outroInput = document.getElementById("outro-bairro-profissional")
-                      if (outroInput) {
-                        outroInput.style.display = value === "outro" ? "block" : "none"
-                      }
-                    }}
-                  >
-                    <SelectTrigger className="border-gray-300">
-                      <SelectValue placeholder="Selecione o bairro" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="centro">Centro</SelectItem>
-                      <SelectItem value="uvaranas">Uvaranas</SelectItem>
-                      <SelectItem value="oficinas">Oficinas</SelectItem>
-                      <SelectItem value="nova_russia">Nova Rússia</SelectItem>
-                      <SelectItem value="contorno">Contorno</SelectItem>
-                      <SelectItem value="jardim_carvalho">Jardim Carvalho</SelectItem>
-                      <SelectItem value="neves">Neves</SelectItem>
-                      <SelectItem value="boa_vista">Boa Vista</SelectItem>
-                      <SelectItem value="chapada">Chapada</SelectItem>
-                      <SelectItem value="colonia_dona_luiza">Colônia Dona Luiza</SelectItem>
-                      <SelectItem value="todos">Todos os bairros</SelectItem>
-                      <SelectItem value="outro">Outro</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <div id="outro-bairro-profissional" style={{ display: "none" }} className="mt-2">
-                    <Input placeholder="Digite o nome do bairro" className="border-gray-300" />
+                    <Input
+                      id="telefone-profissional"
+                      placeholder="(00) 00000-0000"
+                      className="pl-10 border-gray-300"
+                      type="tel"
+                    />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="tipo-servico" className="text-black">
-                    Que tipo de serviço você faz?
+                    Tipo de serviço
                   </Label>
                   <Select>
                     <SelectTrigger className="border-gray-300">
-                      <SelectValue placeholder="Selecione uma opção" />
+                      <SelectValue placeholder="Selecione o tipo de serviço" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="eletricista">Eletricista</SelectItem>
-                      <SelectItem value="marceneiro">Marceneiro</SelectItem>
                       <SelectItem value="pedreiro">Pedreiro</SelectItem>
                       <SelectItem value="pintor">Pintor</SelectItem>
+                      <SelectItem value="marceneiro">Marceneiro</SelectItem>
                       <SelectItem value="encanador">Encanador</SelectItem>
-                      <SelectItem value="montador">Montador de Móveis</SelectItem>
-                      <SelectItem value="jardineiro">Jardineiro</SelectItem>
-                      <SelectItem value="diarista">Diarista</SelectItem>
                       <SelectItem value="outro">Outro</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
-                <Button type="submit" className="w-full bg-orange hover:bg-orange/90">
-                  <Send className="mr-2 h-4 w-4" />
-                  Cadastrar meus serviços
+                <div className="space-y-2">
+                  <Label htmlFor="descricao-habilidades" className="text-black">
+                    Descreva suas habilidades e experiência
+                  </Label>
+                  <Textarea
+                    id="descricao-habilidades"
+                    placeholder="Conte um pouco sobre você e seus serviços"
+                    rows={4}
+                    className="border-gray-300"
+                  />
+                </div>
+
+                <Button type="submit" className="w-full bg-orange hover:bg-orange/90 text-white">
+                  <Hammer className="mr-2 h-4 w-4" />
+                  Enviar cadastro
                 </Button>
               </form>
             </div>
           </TabsContent>
         </Tabs>
       </section>
-
-      {/* Rodapé */}
-      <footer className="bg-white-dark py-6 px-4 border-t">
-        <div className="container mx-auto text-center text-black text-sm">
-          <p>© {new Date().getFullYear()} Tá Pronto - Todos os direitos reservados</p>
-          <p className="mt-2">Conectando quem precisa com quem faz</p>
-        </div>
-      </footer>
     </main>
   )
 }
