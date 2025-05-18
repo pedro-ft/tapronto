@@ -1,38 +1,21 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import type React from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
-import {
-  Hammer,
-  Search,
-  Phone,
-  User,
-  Send,
-  Settings,
-} from "lucide-react"
-import Link from "next/link"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Hammer, Search, Phone, User, Send } from "lucide-react"
 // Importar logo como caminho (se for Next.js e está na pasta public)
 const LogoPath = "/Logo.png"
 
 export default function Home() {
   const [logoSrc, setLogoSrc] = useState<string | null>(null)
   const [logoSize, setLogoSize] = useState<number>(100)
+  const [scrolled, setScrolled] = useState(false)
 
   // Estados para formulário "Preciso de um serviço"
   const [nomeCliente, setNomeCliente] = useState("")
@@ -43,8 +26,6 @@ export default function Home() {
   const [descricaoServico, setDescricaoServico] = useState("")
   const [outraCidade, setOutraCidade] = useState("")
   const cidadeFinal = cidadeCliente === "outro" ? outraCidade : cidadeCliente
-
-
 
   const [nomeProfissional, setNomeProfissional] = useState("")
   const [telefoneProfissional, setTelefoneProfissional] = useState("")
@@ -68,6 +49,21 @@ export default function Home() {
     if (savedSize) {
       setLogoSize(Number.parseInt(savedSize))
     }
+
+    // Adicionar evento de scroll para detectar quando a página é rolada
+    const handleScroll = () => {
+      const offset = window.scrollY
+      if (offset > 10) {
+        setScrolled(true)
+      } else {
+        setScrolled(false)
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+    }
   }, [])
 
   // Handler do envio do formulário "Preciso de um serviço"
@@ -75,8 +71,7 @@ export default function Home() {
     e.preventDefault()
 
     // Usa o bairro selecionado, se for "outro" usa o outroBairroCliente
-    const bairroFinal =
-      bairroCliente === "outro" ? outroBairroCliente.trim() : bairroCliente
+    const bairroFinal = bairroCliente === "outro" ? outroBairroCliente.trim() : bairroCliente
 
     if (!nomeCliente.trim() || !telefoneCliente.trim() || !descricaoServico.trim() || !bairroFinal) {
       alert("Por favor, preencha todos os campos obrigatórios.")
@@ -86,14 +81,13 @@ export default function Home() {
     const numeroWhats = "5542999277206" // Troque para seu número no formato internacional (DD+Número sem + ou espaços)
 
     // Monta a mensagem para WhatsApp
-    const mensagem = 
+    const mensagem =
       `Olá, meu nome é ${nomeCliente}.\n` +
       `Preciso do seguinte serviço: ${descricaoServico}.\n` +
       `Cidade: ${cidadeCliente}\n` +
       `Outra cidade: ${outraCidade}\n` +
       `Bairro: ${bairroFinal}\n` +
       `Telefone para contato: ${telefoneCliente}`
-      
 
     // Codifica a mensagem para a URL
     const urlWhats = `https://wa.me/${numeroWhats}?text=${encodeURIComponent(mensagem)}`
@@ -114,7 +108,7 @@ export default function Home() {
     const numeroWhats = "5542999277206" // Use o mesmo número ou outro se necessário
 
     // Monta a mensagem para WhatsApp
-    const mensagem = 
+    const mensagem =
       `Olá, meu nome é ${nomeProfissional}.\n` +
       `Gostaria de me cadastrar como profissional.\n` +
       `Tipo de serviço: ${tipoServico}\n` +
@@ -136,82 +130,95 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-white">
-      {/* Cabeçalho */}
+      {/* Cabeçalho fixo */}
       <header
-        className="text-white py-6 px-4 md:py-8 relative"
+        className={`text-white py-4 px-4 fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300 ${
+          scrolled ? "shadow-md py-2" : "py-4"
+        }`}
         style={{ backgroundColor: "rgb(36, 36, 43)" }}
       >
-        <div className="container mx-auto flex flex-col items-center">
-          {/* Área para o logo */}
-          <div className="h-28 mb-4 flex items-center justify-center">
-            {logoSrc ? (
-              <img
-                src={logoSrc}
-                alt="Tá Pronto Logo"
-                className="object-contain"
-                style={{
-                  maxWidth: `${logoSize * 2.4}px`,
-                  maxHeight: `${logoSize}px`,
-                }}
-              />
-            ) : (
-              <div className="text-white text-sm">Seu Logo Aqui</div>
-            )}
+        <div className="container mx-auto flex flex-col md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center justify-center md:justify-start">
+            {/* Logo */}
+            <div
+              className={`${scrolled ? "h-16" : "h-20"} flex items-center justify-center transition-all duration-300`}
+            >
+              {logoSrc ? (
+                <img
+                  src={logoSrc || "/placeholder.svg"}
+                  alt="Tá Pronto Logo"
+                  className="object-contain transition-all duration-300"
+                  style={{
+                    maxWidth: `${scrolled ? logoSize * 1.8 : logoSize * 2.4}px`,
+                    maxHeight: `${scrolled ? logoSize * 0.75 : logoSize}px`,
+                  }}
+                />
+              ) : (
+                <div className="text-white text-sm">Seu Logo Aqui</div>
+              )}
+            </div>
+            {/* Título e slogan para telas maiores */}
+            <div className="ml-4 hidden md:block">
+              <h1 className={`font-bold transition-all duration-300 ${scrolled ? "text-xl" : "text-2xl"}`}>
+                Tá Pronto
+              </h1>
+              <p className={`transition-all duration-300 ${scrolled ? "text-sm" : "text-base"}`}>
+                Conectando quem precisa com quem faz.
+              </p>
+            </div>
           </div>
-          <h1 className="text-2xl md:text-3xl font-bold text-center">
-            Tá Pronto
-          </h1>
-          <p className="text-center mt-2 max-w-2xl mx-auto">
-            Conectando quem precisa com quem faz.
-          </p>
+
+          {/* Título e slogan para telas menores - centralizado */}
+          <div className="text-center mt-2 md:hidden">
+            <h1 className="text-xl font-bold">Tá Pronto</h1>
+            <p className="text-sm">Conectando quem precisa com quem faz.</p>
+          </div>
         </div>
       </header>
+
+      {/* Espaçador para compensar o header fixo */}
+      <div className={`${scrolled ? "h-28" : "h-36"} md:h-32`}></div>
 
       {/* Explicação principal */}
       <section className="py-8 px-4 container mx-auto">
         <div className="max-w-3xl mx-auto bg-white-dark p-6 rounded-lg shadow-sm">
-          <h2 className="text-xl md:text-2xl font-semibold text-center mb-4 text-black">
-            Quem somos
-          </h2>
+          <h2 className="text-xl md:text-2xl font-semibold text-center mb-4 text-black">Quem somos</h2>
           <p className="text-center text-black">
-            Somos um grupo que acredita na potência do trabalho local.
-            Desenvolvemos esta plataforma para conectar quem necessita de um
-            serviço de alta qualidade aos profissionais que realmente dominam a
-            sua área de atuação. Aqui, é possível encontrar e estabelecer
-            conexões com eletricistas, pedreiros, pintores, marceneiros,
-            encanadores e outros profissionais da sua área, sem complicações.
-            Nossa meta é simplificar a rotina diária, valorizando a competência
-            e a segurança dos serviços prestados perto de você.
+            Somos um grupo que acredita na potência do trabalho local. Desenvolvemos esta plataforma para conectar quem
+            necessita de um serviço de alta qualidade aos profissionais que realmente dominam a sua área de atuação.
+            Aqui, é possível encontrar e estabelecer conexões com eletricistas, pedreiros, pintores, marceneiros,
+            encanadores e outros profissionais da sua área, sem complicações. Nossa meta é simplificar a rotina diária,
+            valorizando a competência e a segurança dos serviços prestados perto de você.
           </p>
         </div>
       </section>
 
       {/* Formulários */}
-      <section className="py-6 px-4 container mx-auto mb-12">
+      <section className="py-2 px-2 container mx-auto mb-12">
         <Tabs defaultValue="preciso" className="max-w-3xl mx-auto">
-          <TabsList className="grid w-full grid-cols-2 mb-8 bg-white-dark">
+          <TabsList className="h-[60px] mx-auto grid grid-cols-2 mb-8 bg-white-dark">
             <TabsTrigger
               value="preciso"
               className="text-base py-3 data-[state=active]:bg-blue data-[state=active]:text-white"
             >
-              <Search className="mr-2 h-4 w-4" />
-              Preciso de um serviço
+              <Search className="mr-2 h-2 w-4" />
+              <span className="hidden sm:inline">Preciso de um serviço</span>
+              <span className="sm:hidden">Preciso</span>
             </TabsTrigger>
             <TabsTrigger
               value="ofereco"
               className="text-base py-3 data-[state=active]:bg-orange data-[state=active]:text-white"
             >
               <Hammer className="mr-2 h-4 w-4" />
-              Ofereço serviços
+              <span className="hidden sm:inline">Ofereço serviços</span>
+              <span className="sm:hidden">Ofereço</span>
             </TabsTrigger>
           </TabsList>
 
           {/* Formulário para quem precisa de serviço */}
           <TabsContent value="preciso">
-            <div className="bg-white p-6 rounded-lg border shadow-sm">
-              <h3 className="text-lg font-medium mb-6 text-black">
-                Preencha os dados para encontrar um profissional
-              </h3>
+            <div className="bg-white p-4 sm:p-6 rounded-lg border shadow-sm">
+              <h3 className="text-lg font-medium mb-6 text-black">Preencha os dados para encontrar um profissional</h3>
 
               <form className="space-y-6" onSubmit={handleEnviarSolicitacao}>
                 <div className="space-y-2">
@@ -264,12 +271,12 @@ export default function Home() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Curitiba">Curitiba</SelectItem>
-                      <SelectItem value ="Pirai do Sul">Pirai do Sul</SelectItem>
+                      <SelectItem value="Pirai do Sul">Pirai do Sul</SelectItem>
                       <SelectItem value="Ponta Grossa">Ponta Grossa</SelectItem>
                       <SelectItem value="São Paulo">São Paulo</SelectItem>
                       <SelectItem value="outro">Outro</SelectItem>
                     </SelectContent>
-                </Select>
+                  </Select>
                   {cidadeCliente === "outro" && (
                     <div className="mt-2">
                       <Input
@@ -293,67 +300,63 @@ export default function Home() {
                       handleChangeBairro(value)
                     }}
                   >
-
-                <SelectTrigger className="border-gray-300">
-                  <SelectValue placeholder="Selecione o bairro" />
-                </SelectTrigger>
-                <SelectContent>
-                  {cidadeCliente === "Ponta Grossa" ? (
-                    <>
-                      <SelectItem value="centro">Centro</SelectItem>
-                      <SelectItem value="uvaranas">Uvaranas</SelectItem>
-                      <SelectItem value="oficinas">Oficinas</SelectItem>
-                      <SelectItem value="nova_russia">Nova Rússia</SelectItem>
-                      <SelectItem value="contorno">Contorno</SelectItem>
-                      <SelectItem value="jardim_carvalho">Jardim Carvalho</SelectItem>
-                      <SelectItem value="neves">Neves</SelectItem>
-                      <SelectItem value="boa_vista">Boa Vista</SelectItem>
-                      <SelectItem value="chapada">Chapada</SelectItem>
-                      <SelectItem value="colonia_dona_luiza">Colônia Dona Luiza</SelectItem>
-                    </>
-
-                     ) : cidadeCliente === "Pirai do Sul" ? (
-                    <>
-                      <SelectItem value="centro">Centro</SelectItem>
-                      <SelectItem value="cristo">Cristo</SelectItem>
-                      <SelectItem value="ronda">Ronda</SelectItem>
-                      <SelectItem value="tresantas">Tres Santas</SelectItem>
-                      <SelectItem value="vitorcioffi">Vitor Cioffi</SelectItem>
-                      <SelectItem value="ctg">CTG</SelectItem>
-                      <SelectItem value="capao">Jardim Primavera</SelectItem>
-                      <SelectItem value="morumbi">Alto da XV</SelectItem>
-
-                    </>
-                  ) : cidadeCliente === "São Paulo" ? (
-                    <>
-                      <SelectItem value="moema">Moema</SelectItem>
-                      <SelectItem value="pinheiros">Pinheiros</SelectItem>
-                      <SelectItem value="vila_madalena">Vila Madalena</SelectItem>
-                      <SelectItem value="tatuape">Tatuapé</SelectItem>
-                      <SelectItem value="itaquera">Itaquera</SelectItem>
-                      <SelectItem value="lapa">Lapa</SelectItem>
-                      <SelectItem value="santana">Santana</SelectItem>
-                      <SelectItem value="morumbi">Morumbi</SelectItem>
-                      <SelectItem value="perdizes">Perdizes</SelectItem>
-                      <SelectItem value="bela_vista">Bela Vista</SelectItem>
-                    </>
-                  ) : cidadeCliente === "Curitiba" ? (
-                    <>
-                      <SelectItem value="batel">Batel</SelectItem>
-                      <SelectItem value="agua_verde">Água Verde</SelectItem>
-                      <SelectItem value="centro">Centro</SelectItem>
-                      <SelectItem value="santa_felicidade">Santa Felicidade</SelectItem>
-                      <SelectItem value="boqueirao">Boqueirão</SelectItem>
-                      <SelectItem value="cic">CIC</SelectItem>
-                      <SelectItem value="pinheirinho">Pinheirinho</SelectItem>
-                      <SelectItem value="capao_raso">Capão Raso</SelectItem>
-                      <SelectItem value="cabral">Cabral</SelectItem>
-                      <SelectItem value="bairro_alto">Bairro Alto</SelectItem>
-                    </>
-                  ) : null}
-                  <SelectItem value="outro">Outro</SelectItem>
-                </SelectContent>
-
+                    <SelectTrigger className="border-gray-300">
+                      <SelectValue placeholder="Selecione o bairro" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {cidadeCliente === "Ponta Grossa" ? (
+                        <>
+                          <SelectItem value="centro">Centro</SelectItem>
+                          <SelectItem value="uvaranas">Uvaranas</SelectItem>
+                          <SelectItem value="oficinas">Oficinas</SelectItem>
+                          <SelectItem value="nova_russia">Nova Rússia</SelectItem>
+                          <SelectItem value="contorno">Contorno</SelectItem>
+                          <SelectItem value="jardim_carvalho">Jardim Carvalho</SelectItem>
+                          <SelectItem value="neves">Neves</SelectItem>
+                          <SelectItem value="boa_vista">Boa Vista</SelectItem>
+                          <SelectItem value="chapada">Chapada</SelectItem>
+                          <SelectItem value="colonia_dona_luiza">Colônia Dona Luiza</SelectItem>
+                        </>
+                      ) : cidadeCliente === "Pirai do Sul" ? (
+                        <>
+                          <SelectItem value="centro">Centro</SelectItem>
+                          <SelectItem value="cristo">Cristo</SelectItem>
+                          <SelectItem value="ronda">Ronda</SelectItem>
+                          <SelectItem value="tresantas">Tres Santas</SelectItem>
+                          <SelectItem value="vitorcioffi">Vitor Cioffi</SelectItem>
+                          <SelectItem value="ctg">CTG</SelectItem>
+                          <SelectItem value="capao">Jardim Primavera</SelectItem>
+                          <SelectItem value="morumbi">Alto da XV</SelectItem>
+                        </>
+                      ) : cidadeCliente === "São Paulo" ? (
+                        <>
+                          <SelectItem value="moema">Moema</SelectItem>
+                          <SelectItem value="pinheiros">Pinheiros</SelectItem>
+                          <SelectItem value="vila_madalena">Vila Madalena</SelectItem>
+                          <SelectItem value="tatuape">Tatuapé</SelectItem>
+                          <SelectItem value="itaquera">Itaquera</SelectItem>
+                          <SelectItem value="lapa">Lapa</SelectItem>
+                          <SelectItem value="santana">Santana</SelectItem>
+                          <SelectItem value="morumbi">Morumbi</SelectItem>
+                          <SelectItem value="perdizes">Perdizes</SelectItem>
+                          <SelectItem value="bela_vista">Bela Vista</SelectItem>
+                        </>
+                      ) : cidadeCliente === "Curitiba" ? (
+                        <>
+                          <SelectItem value="batel">Batel</SelectItem>
+                          <SelectItem value="agua_verde">Água Verde</SelectItem>
+                          <SelectItem value="centro">Centro</SelectItem>
+                          <SelectItem value="santa_felicidade">Santa Felicidade</SelectItem>
+                          <SelectItem value="boqueirao">Boqueirão</SelectItem>
+                          <SelectItem value="cic">CIC</SelectItem>
+                          <SelectItem value="pinheirinho">Pinheirinho</SelectItem>
+                          <SelectItem value="capao_raso">Capão Raso</SelectItem>
+                          <SelectItem value="cabral">Cabral</SelectItem>
+                          <SelectItem value="bairro_alto">Bairro Alto</SelectItem>
+                        </>
+                      ) : null}
+                      <SelectItem value="outro">Outro</SelectItem>
+                    </SelectContent>
                   </Select>
                   {bairroCliente === "outro" && (
                     <div className="mt-2">
@@ -393,10 +396,8 @@ export default function Home() {
 
           {/* Formulário para quem oferece serviço */}
           <TabsContent value="ofereco">
-            <div className="bg-white p-6 rounded-lg border shadow-sm">
-              <h3 className="text-lg font-medium mb-6 text-black">
-                Cadastre-se como profissional
-              </h3>
+            <div className="bg-white p-4 sm:p-6 rounded-lg border shadow-sm">
+              <h3 className="text-lg font-medium mb-6 text-black">Cadastre-se como profissional</h3>
 
               <form className="space-y-6" onSubmit={handleEnviarCadastro}>
                 <div className="space-y-2">
@@ -438,11 +439,7 @@ export default function Home() {
                   <Label htmlFor="tipo-servico" className="text-black">
                     Tipo de serviço
                   </Label>
-                  <Select
-                    value={tipoServico}
-                    onValueChange={(value) => setTipoServico(value)}
-                    required
-                  >
+                  <Select value={tipoServico} onValueChange={(value) => setTipoServico(value)} required>
                     <SelectTrigger className="border-gray-300">
                       <SelectValue placeholder="Selecione o tipo de serviço" />
                     </SelectTrigger>
@@ -457,7 +454,7 @@ export default function Home() {
                   </Select>
                 </div>
 
-              <div className="space-y-2">
+                <div className="space-y-2">
                   <Label htmlFor="cidade-cliente" className="text-black">
                     Cidade
                   </Label>
@@ -480,9 +477,6 @@ export default function Home() {
                   </Select>
                 </div>
 
-             
-
-                 
                 <div className="space-y-2">
                   <Label htmlFor="descricao-habilidades" className="text-black">
                     Descreva suas habilidades e experiência
@@ -507,6 +501,14 @@ export default function Home() {
           </TabsContent>
         </Tabs>
       </section>
+
+      {/* Rodapé */}
+      <footer className="bg-gray-100 py-6 px-4 border-t">
+        <div className="container mx-auto text-center text-black text-sm">
+          <p>© {new Date().getFullYear()} Tá Pronto - Todos os direitos reservados</p>
+          <p className="mt-2">Conectando quem precisa com quem faz</p>
+        </div>
+      </footer>
     </main>
   )
 }
