@@ -42,6 +42,11 @@ export default function Home() {
   const [outroBairroCliente, setOutroBairroCliente] = useState("")
   const [descricaoServico, setDescricaoServico] = useState("")
 
+  const [nomeProfissional, setNomeProfissional] = useState("")
+  const [telefoneProfissional, setTelefoneProfissional] = useState("")
+  const [tipoServico, setTipoServico] = useState("")
+  const [descricaoHabilidades, setDescricaoHabilidades] = useState("")
+
   useEffect(() => {
     // Pega logo salva no localStorage, se houver
     const savedLogo = localStorage.getItem("tapronto-logo")
@@ -80,6 +85,32 @@ export default function Home() {
       `Cidade: ${cidadeCliente}\n` +
       `Bairro: ${bairroFinal}\n` +
       `Telefone para contato: ${telefoneCliente}`
+
+    // Codifica a mensagem para a URL
+    const urlWhats = `https://wa.me/${numeroWhats}?text=${encodeURIComponent(mensagem)}`
+
+    // Abre o WhatsApp numa nova aba
+    window.open(urlWhats, "_blank")
+  }
+
+  // Handler do envio do formulário "Ofereço serviços"
+  const handleEnviarCadastro = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    if (!nomeProfissional.trim() || !telefoneProfissional.trim() || !tipoServico || !descricaoHabilidades.trim()) {
+      alert("Por favor, preencha todos os campos obrigatórios.")
+      return
+    }
+
+    const numeroWhats = "5542999277206" // Use o mesmo número ou outro se necessário
+
+    // Monta a mensagem para WhatsApp
+    const mensagem = 
+      `Olá, meu nome é ${nomeProfissional}.\n` +
+      `Gostaria de me cadastrar como profissional.\n` +
+      `Tipo de serviço: ${tipoServico}\n` +
+      `Minhas habilidades: ${descricaoHabilidades}\n` +
+      `Telefone para contato: ${telefoneProfissional}`
 
     // Codifica a mensagem para a URL
     const urlWhats = `https://wa.me/${numeroWhats}?text=${encodeURIComponent(mensagem)}`
@@ -315,7 +346,7 @@ export default function Home() {
                 Cadastre-se como profissional
               </h3>
 
-              <form className="space-y-6">
+              <form className="space-y-6" onSubmit={handleEnviarCadastro}>
                 <div className="space-y-2">
                   <Label htmlFor="nome-profissional" className="text-black">
                     Nome completo
@@ -326,6 +357,9 @@ export default function Home() {
                       id="nome-profissional"
                       placeholder="Seu nome"
                       className="pl-10 border-gray-300"
+                      value={nomeProfissional}
+                      onChange={(e) => setNomeProfissional(e.target.value)}
+                      required
                     />
                   </div>
                 </div>
@@ -341,6 +375,9 @@ export default function Home() {
                       placeholder="(00) 00000-0000"
                       className="pl-10 border-gray-300"
                       type="tel"
+                      value={telefoneProfissional}
+                      onChange={(e) => setTelefoneProfissional(e.target.value)}
+                      required
                     />
                   </div>
                 </div>
@@ -349,7 +386,11 @@ export default function Home() {
                   <Label htmlFor="tipo-servico" className="text-black">
                     Tipo de serviço
                   </Label>
-                  <Select>
+                  <Select
+                    value={tipoServico}
+                    onValueChange={(value) => setTipoServico(value)}
+                    required
+                  >
                     <SelectTrigger className="border-gray-300">
                       <SelectValue placeholder="Selecione o tipo de serviço" />
                     </SelectTrigger>
@@ -373,6 +414,9 @@ export default function Home() {
                     placeholder="Conte um pouco sobre você e seus serviços"
                     rows={4}
                     className="border-gray-300"
+                    value={descricaoHabilidades}
+                    onChange={(e) => setDescricaoHabilidades(e.target.value)}
+                    required
                   />
                 </div>
 
