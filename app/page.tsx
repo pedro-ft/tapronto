@@ -71,7 +71,7 @@ export default function Home() {
       return
     }
 
-    const numeroWhats = "5591999999999" // Troque para seu número no formato internacional (DD+Número sem + ou espaços)
+    const numeroWhats = "5542999277206" // Troque para seu número no formato internacional (DD+Número sem + ou espaços)
 
     // Monta a mensagem para WhatsApp
     const mensagem = 
@@ -214,20 +214,23 @@ export default function Home() {
                     />
                   </div>
                 </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="cidade-cliente" className="text-black">
                     Cidade
                   </Label>
                   <Select
                     value={cidadeCliente}
-                    onValueChange={setCidadeCliente}
+                    onValueChange={(value) => {
+                      setCidadeCliente(value)
+                      setBairroCliente("") // Resetar bairro ao mudar de cidade
+                    }}
                   >
                     <SelectTrigger className="border-gray-300">
                       <SelectValue placeholder="Selecione a cidade" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="pontagrossa">Ponta Grossa</SelectItem>
+                      <SelectItem value="saopaulo">São Paulo</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -246,16 +249,33 @@ export default function Home() {
                       <SelectValue placeholder="Selecione o bairro" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="centro">Centro</SelectItem>
-                      <SelectItem value="uvaranas">Uvaranas</SelectItem>
-                      <SelectItem value="oficinas">Oficinas</SelectItem>
-                      <SelectItem value="nova_russia">Nova Rússia</SelectItem>
-                      <SelectItem value="contorno">Contorno</SelectItem>
-                      <SelectItem value="jardim_carvalho">Jardim Carvalho</SelectItem>
-                      <SelectItem value="neves">Neves</SelectItem>
-                      <SelectItem value="boa_vista">Boa Vista</SelectItem>
-                      <SelectItem value="chapada">Chapada</SelectItem>
-                      <SelectItem value="colonia_dona_luiza">Colônia Dona Luiza</SelectItem>
+                      {cidadeCliente === "pontagrossa" ? (
+                        <>
+                          <SelectItem value="centro">Centro</SelectItem>
+                          <SelectItem value="uvaranas">Uvaranas</SelectItem>
+                          <SelectItem value="oficinas">Oficinas</SelectItem>
+                          <SelectItem value="nova_russia">Nova Rússia</SelectItem>
+                          <SelectItem value="contorno">Contorno</SelectItem>
+                          <SelectItem value="jardim_carvalho">Jardim Carvalho</SelectItem>
+                          <SelectItem value="neves">Neves</SelectItem>
+                          <SelectItem value="boa_vista">Boa Vista</SelectItem>
+                          <SelectItem value="chapada">Chapada</SelectItem>
+                          <SelectItem value="colonia_dona_luiza">Colônia Dona Luiza</SelectItem>
+                        </>
+                      ) : cidadeCliente === "saopaulo" ? (
+                        <>
+                          <SelectItem value="moema">Moema</SelectItem>
+                          <SelectItem value="pinheiros">Pinheiros</SelectItem>
+                          <SelectItem value="vila_madalena">Vila Madalena</SelectItem>
+                          <SelectItem value="tatuape">Tatuapé</SelectItem>
+                          <SelectItem value="itaquera">Itaquera</SelectItem>
+                          <SelectItem value="lapa">Lapa</SelectItem>
+                          <SelectItem value="santana">Santana</SelectItem>
+                          <SelectItem value="morumbi">Morumbi</SelectItem>
+                          <SelectItem value="perdizes">Perdizes</SelectItem>
+                          <SelectItem value="bela_vista">Bela Vista</SelectItem>
+                        </>
+                      ) : null}
                       <SelectItem value="outro">Outro</SelectItem>
                     </SelectContent>
                   </Select>
