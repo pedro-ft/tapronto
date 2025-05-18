@@ -37,7 +37,7 @@ export default function Home() {
   // Estados para formulário "Preciso de um serviço"
   const [nomeCliente, setNomeCliente] = useState("")
   const [telefoneCliente, setTelefoneCliente] = useState("")
-  const [cidadeCliente, setCidadeCliente] = useState("pontagrossa")
+  const [cidadeCliente, setCidadeCliente] = useState("Ponta Grossa")
   const [bairroCliente, setBairroCliente] = useState("")
   const [outroBairroCliente, setOutroBairroCliente] = useState("")
   const [descricaoServico, setDescricaoServico] = useState("")
@@ -46,6 +46,9 @@ export default function Home() {
   const [telefoneProfissional, setTelefoneProfissional] = useState("")
   const [tipoServico, setTipoServico] = useState("")
   const [descricaoHabilidades, setDescricaoHabilidades] = useState("")
+  const [bairroFuncionario, setBairroFuncionario] = useState("")
+  const [cidadeFuncionario, setCidadeFuncionario] = useState("")
+  const [outroBairroFuncionario, setOutroBairroFuncionario] = useState("")
 
   useEffect(() => {
     // Pega logo salva no localStorage, se houver
@@ -110,6 +113,7 @@ export default function Home() {
       `Gostaria de me cadastrar como profissional.\n` +
       `Tipo de serviço: ${tipoServico}\n` +
       `Minhas habilidades: ${descricaoHabilidades}\n` +
+      `Cidade: ${cidadeFuncionario}\n` +
       `Telefone para contato: ${telefoneProfissional}`
 
     // Codifica a mensagem para a URL
@@ -152,7 +156,7 @@ export default function Home() {
             Tá Pronto
           </h1>
           <p className="text-center mt-2 max-w-2xl mx-auto">
-            Conectando quem precisa com quem faz na sua cidade
+            Conectando quem precisa com quem faz.
           </p>
         </div>
       </header>
@@ -253,9 +257,9 @@ export default function Home() {
                       <SelectValue placeholder="Selecione a cidade" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="pontagrossa">Ponta Grossa</SelectItem>
-                      <SelectItem value="saopaulo">São Paulo</SelectItem>
-                      <SelectItem value="curitiba">Curitiba</SelectItem>
+                      <SelectItem value="Ponta Grossa">Ponta Grossa</SelectItem>
+                      <SelectItem value="São Paulo">São Paulo</SelectItem>
+                      <SelectItem value="Curitiba">Curitiba</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -275,7 +279,7 @@ export default function Home() {
                   <SelectValue placeholder="Selecione o bairro" />
                 </SelectTrigger>
                 <SelectContent>
-                  {cidadeCliente === "pontagrossa" ? (
+                  {cidadeCliente === "Ponta Grossa" ? (
                     <>
                       <SelectItem value="centro">Centro</SelectItem>
                       <SelectItem value="uvaranas">Uvaranas</SelectItem>
@@ -288,7 +292,7 @@ export default function Home() {
                       <SelectItem value="chapada">Chapada</SelectItem>
                       <SelectItem value="colonia_dona_luiza">Colônia Dona Luiza</SelectItem>
                     </>
-                  ) : cidadeCliente === "saopaulo" ? (
+                  ) : cidadeCliente === "São Paulo" ? (
                     <>
                       <SelectItem value="moema">Moema</SelectItem>
                       <SelectItem value="pinheiros">Pinheiros</SelectItem>
@@ -301,7 +305,7 @@ export default function Home() {
                       <SelectItem value="perdizes">Perdizes</SelectItem>
                       <SelectItem value="bela_vista">Bela Vista</SelectItem>
                     </>
-                  ) : cidadeCliente === "curitiba" ? (
+                  ) : cidadeCliente === "Curitiba" ? (
                     <>
                       <SelectItem value="batel">Batel</SelectItem>
                       <SelectItem value="agua_verde">Água Verde</SelectItem>
@@ -421,6 +425,31 @@ export default function Home() {
                   </Select>
                 </div>
 
+              <div className="space-y-2">
+                  <Label htmlFor="cidade-cliente" className="text-black">
+                    Cidade
+                  </Label>
+                  <Select
+                    value={cidadeFuncionario}
+                    onValueChange={(value) => {
+                      setCidadeFuncionario(value)
+                      setBairroFuncionario("") // Resetar bairro ao mudar de cidade
+                    }}
+                  >
+                    <SelectTrigger className="border-gray-300">
+                      <SelectValue placeholder="Selecione a cidade" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Ponta Grossa">Ponta Grossa</SelectItem>
+                      <SelectItem value="São Paulo">São Paulo</SelectItem>
+                      <SelectItem value="Curitiba">Curitiba</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+             
+
+                 
                 <div className="space-y-2">
                   <Label htmlFor="descricao-habilidades" className="text-black">
                     Descreva suas habilidades e experiência
