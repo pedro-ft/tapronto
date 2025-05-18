@@ -255,6 +255,7 @@ export default function Home() {
                     <SelectContent>
                       <SelectItem value="pontagrossa">Ponta Grossa</SelectItem>
                       <SelectItem value="saopaulo">São Paulo</SelectItem>
+                      <SelectItem value="curitiba">Curitiba</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -269,39 +270,54 @@ export default function Home() {
                       handleChangeBairro(value)
                     }}
                   >
-                    <SelectTrigger className="border-gray-300">
-                      <SelectValue placeholder="Selecione o bairro" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {cidadeCliente === "pontagrossa" ? (
-                        <>
-                          <SelectItem value="centro">Centro</SelectItem>
-                          <SelectItem value="uvaranas">Uvaranas</SelectItem>
-                          <SelectItem value="oficinas">Oficinas</SelectItem>
-                          <SelectItem value="nova_russia">Nova Rússia</SelectItem>
-                          <SelectItem value="contorno">Contorno</SelectItem>
-                          <SelectItem value="jardim_carvalho">Jardim Carvalho</SelectItem>
-                          <SelectItem value="neves">Neves</SelectItem>
-                          <SelectItem value="boa_vista">Boa Vista</SelectItem>
-                          <SelectItem value="chapada">Chapada</SelectItem>
-                          <SelectItem value="colonia_dona_luiza">Colônia Dona Luiza</SelectItem>
-                        </>
-                      ) : cidadeCliente === "saopaulo" ? (
-                        <>
-                          <SelectItem value="moema">Moema</SelectItem>
-                          <SelectItem value="pinheiros">Pinheiros</SelectItem>
-                          <SelectItem value="vila_madalena">Vila Madalena</SelectItem>
-                          <SelectItem value="tatuape">Tatuapé</SelectItem>
-                          <SelectItem value="itaquera">Itaquera</SelectItem>
-                          <SelectItem value="lapa">Lapa</SelectItem>
-                          <SelectItem value="santana">Santana</SelectItem>
-                          <SelectItem value="morumbi">Morumbi</SelectItem>
-                          <SelectItem value="perdizes">Perdizes</SelectItem>
-                          <SelectItem value="bela_vista">Bela Vista</SelectItem>
-                        </>
-                      ) : null}
-                      <SelectItem value="outro">Outro</SelectItem>
-                    </SelectContent>
+
+                <SelectTrigger className="border-gray-300">
+                  <SelectValue placeholder="Selecione o bairro" />
+                </SelectTrigger>
+                <SelectContent>
+                  {cidadeCliente === "pontagrossa" ? (
+                    <>
+                      <SelectItem value="centro">Centro</SelectItem>
+                      <SelectItem value="uvaranas">Uvaranas</SelectItem>
+                      <SelectItem value="oficinas">Oficinas</SelectItem>
+                      <SelectItem value="nova_russia">Nova Rússia</SelectItem>
+                      <SelectItem value="contorno">Contorno</SelectItem>
+                      <SelectItem value="jardim_carvalho">Jardim Carvalho</SelectItem>
+                      <SelectItem value="neves">Neves</SelectItem>
+                      <SelectItem value="boa_vista">Boa Vista</SelectItem>
+                      <SelectItem value="chapada">Chapada</SelectItem>
+                      <SelectItem value="colonia_dona_luiza">Colônia Dona Luiza</SelectItem>
+                    </>
+                  ) : cidadeCliente === "saopaulo" ? (
+                    <>
+                      <SelectItem value="moema">Moema</SelectItem>
+                      <SelectItem value="pinheiros">Pinheiros</SelectItem>
+                      <SelectItem value="vila_madalena">Vila Madalena</SelectItem>
+                      <SelectItem value="tatuape">Tatuapé</SelectItem>
+                      <SelectItem value="itaquera">Itaquera</SelectItem>
+                      <SelectItem value="lapa">Lapa</SelectItem>
+                      <SelectItem value="santana">Santana</SelectItem>
+                      <SelectItem value="morumbi">Morumbi</SelectItem>
+                      <SelectItem value="perdizes">Perdizes</SelectItem>
+                      <SelectItem value="bela_vista">Bela Vista</SelectItem>
+                    </>
+                  ) : cidadeCliente === "curitiba" ? (
+                    <>
+                      <SelectItem value="batel">Batel</SelectItem>
+                      <SelectItem value="agua_verde">Água Verde</SelectItem>
+                      <SelectItem value="centro">Centro</SelectItem>
+                      <SelectItem value="santa_felicidade">Santa Felicidade</SelectItem>
+                      <SelectItem value="boqueirao">Boqueirão</SelectItem>
+                      <SelectItem value="cic">CIC</SelectItem>
+                      <SelectItem value="pinheirinho">Pinheirinho</SelectItem>
+                      <SelectItem value="capao_raso">Capão Raso</SelectItem>
+                      <SelectItem value="cabral">Cabral</SelectItem>
+                      <SelectItem value="bairro_alto">Bairro Alto</SelectItem>
+                    </>
+                  ) : null}
+                  <SelectItem value="outro">Outro</SelectItem>
+                </SelectContent>
+
                   </Select>
                   {bairroCliente === "outro" && (
                     <div className="mt-2">
