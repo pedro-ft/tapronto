@@ -41,6 +41,10 @@ export default function Home() {
   const [bairroCliente, setBairroCliente] = useState("")
   const [outroBairroCliente, setOutroBairroCliente] = useState("")
   const [descricaoServico, setDescricaoServico] = useState("")
+  const [outraCidade, setOutraCidade] = useState("")
+  const cidadeFinal = cidadeCliente === "outro" ? outraCidade : cidadeCliente
+
+
 
   const [nomeProfissional, setNomeProfissional] = useState("")
   const [telefoneProfissional, setTelefoneProfissional] = useState("")
@@ -86,8 +90,10 @@ export default function Home() {
       `Olá, meu nome é ${nomeCliente}.\n` +
       `Preciso do seguinte serviço: ${descricaoServico}.\n` +
       `Cidade: ${cidadeCliente}\n` +
+      `Outra cidade: ${outraCidade}\n` +
       `Bairro: ${bairroFinal}\n` +
       `Telefone para contato: ${telefoneCliente}`
+      
 
     // Codifica a mensagem para a URL
     const urlWhats = `https://wa.me/${numeroWhats}?text=${encodeURIComponent(mensagem)}`
@@ -261,9 +267,20 @@ export default function Home() {
                       <SelectItem value ="Pirai do Sul">Pirai do Sul</SelectItem>
                       <SelectItem value="Ponta Grossa">Ponta Grossa</SelectItem>
                       <SelectItem value="São Paulo">São Paulo</SelectItem>
-
+                      <SelectItem value="outro">Outro</SelectItem>
                     </SelectContent>
-                  </Select>
+                </Select>
+                  {cidadeCliente === "outro" && (
+                    <div className="mt-2">
+                      <Input
+                        placeholder="Digite o nome da Cidade"
+                        className="border-gray-300"
+                        value={outraCidade}
+                        onChange={(e) => setOutraCidade(e.target.value)}
+                        required
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-2">
