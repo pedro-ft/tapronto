@@ -257,9 +257,11 @@ export default function Home() {
                       <SelectValue placeholder="Selecione a cidade" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="Curitiba">Curitiba</SelectItem>
+                      <SelectItem value ="Pirai do Sul">Pirai do Sul</SelectItem>
                       <SelectItem value="Ponta Grossa">Ponta Grossa</SelectItem>
                       <SelectItem value="São Paulo">São Paulo</SelectItem>
-                      <SelectItem value="Curitiba">Curitiba</SelectItem>
+
                     </SelectContent>
                   </Select>
                 </div>
@@ -291,6 +293,19 @@ export default function Home() {
                       <SelectItem value="boa_vista">Boa Vista</SelectItem>
                       <SelectItem value="chapada">Chapada</SelectItem>
                       <SelectItem value="colonia_dona_luiza">Colônia Dona Luiza</SelectItem>
+                    </>
+
+                     ) : cidadeCliente === "Pirai do Sul" ? (
+                    <>
+                      <SelectItem value="centro">Centro</SelectItem>
+                      <SelectItem value="cristo">Cristo</SelectItem>
+                      <SelectItem value="ronda">Ronda</SelectItem>
+                      <SelectItem value="tresantas">Tres Santas</SelectItem>
+                      <SelectItem value="vitorcioffi">Vitor Cioffi</SelectItem>
+                      <SelectItem value="ctg">CTG</SelectItem>
+                      <SelectItem value="capao">Jardim Primavera</SelectItem>
+                      <SelectItem value="morumbi">Alto da XV</SelectItem>
+
                     </>
                   ) : cidadeCliente === "São Paulo" ? (
                     <>
@@ -441,6 +456,7 @@ export default function Home() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Ponta Grossa">Ponta Grossa</SelectItem>
+                      <SelectItem value="Pirai do Sul">Pirai do Sul</SelectItem>
                       <SelectItem value="São Paulo">São Paulo</SelectItem>
                       <SelectItem value="Curitiba">Curitiba</SelectItem>
                     </SelectContent>
