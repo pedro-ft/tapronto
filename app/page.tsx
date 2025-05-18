@@ -98,15 +98,8 @@ export default function Home() {
       {/* Cabeçalho */}
       <header
         className="text-white py-6 px-4 md:py-8 relative"
-        style={{ backgroundColor: "rgb(249, 164, 53)" }}
+        style={{ backgroundColor: "rgb(36, 36, 43)" }}
       >
-        <Link
-          href="/admin"
-          className="absolute top-4 right-4 text-white/80 hover:text-white"
-          title="Configurações"
-        >
-          <Settings size={20} />
-        </Link>
         <div className="container mx-auto flex flex-col items-center">
           {/* Área para o logo */}
           <div className="h-28 mb-4 flex items-center justify-center">
